@@ -1,0 +1,31 @@
+language: minimal
+dist: xenial
+
+branches:
+  only:
+    - master
+
+env:
+  - ARCH=ivybridge
+  - ARCH=skylake
+
+services:
+  - docker
+
+install:
+  - docker build --build-arg ARCH=$ARCH -t builder .
+
+script:
+  - mkdir build
+  - docker run --mount "type=bind,src=$PWD/build,dst=/build" builder /bin/sh -c 'yes | makepkg -s;'
+
+before_deploy:
+  - git config --local user.name "Ranieri Althoff"
+  - git config --local user.email "1993083+ranisalt@users.noreply.github.com"
+  - git tag $(source PKGBUILD; echo $pkgver)-$(git log --format=%h -1)
+
+deploy:
+  provider: releases
+  edge: true
+  file_glob: true
+  file: "build/*.pkg.tar.*"
