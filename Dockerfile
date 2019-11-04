@@ -8,8 +8,7 @@ RUN useradd -M builduser && \
     echo 'CXXFLAGS="$CFLAGS"' >> /etc/makepkg.conf && \
     echo 'LDFLAGS="-Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now,--gc-sections"' >> /etc/makepkg.conf && \
     echo 'MAKEFLAGS="-j2"' >> /etc/makepkg.conf && \
-    echo 'PKGDEST="/build"' >> /etc/makepkg.conf && \
-    echo 'PKGEXT="-'$ARCH'.pkg.tar.zst"' >> /etc/makepkg.conf
+    echo 'PKGDEST="/build"' >> /etc/makepkg.conf
 
 COPY --chown=builduser . /trunk/
 

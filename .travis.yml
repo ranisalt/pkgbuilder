@@ -17,15 +17,16 @@ install:
 
 script:
   - mkdir build
-  - docker run --mount "type=bind,src=$PWD/build,dst=/build" builder /bin/sh -c 'yes | makepkg -s;'
+  - docker run --mount "type=bind,src=$PWD/build,dst=/build" builder /bin/sh -c 'sudo chmod -Rv 777 /build; yes | makepkg -s;'
 
 before_deploy:
   - git config --local user.name "Ranieri Althoff"
   - git config --local user.email "1993083+ranisalt@users.noreply.github.com"
   - git tag $(source PKGBUILD; echo $pkgver)-$(git log --format=%h -1)
+  - find -name '*.pkg*' -exec rename -v 's/.pkg/-'$ARCH'.pkg/' '{}' ';'
 
 deploy:
   provider: releases
   edge: true
   file_glob: true
-  file: "build/*.pkg.tar.*"
+  file: "build/*.pkg.tar*"
